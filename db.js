@@ -18,7 +18,7 @@ db.serialize(() => {
     "order" INTEGER DEFAULT 0
   )`);
   db.run(`CREATE INDEX IF NOT EXISTS idx_menus_order ON menus("order")`);
-  
+
   // 添加子菜单表
   db.run(`CREATE TABLE IF NOT EXISTS sub_menus (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -29,7 +29,7 @@ db.serialize(() => {
   )`);
   db.run(`CREATE INDEX IF NOT EXISTS idx_sub_menus_parent_id ON sub_menus(parent_id)`);
   db.run(`CREATE INDEX IF NOT EXISTS idx_sub_menus_order ON sub_menus("order")`);
-  
+
   db.run(`CREATE TABLE IF NOT EXISTS cards (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     menu_id INTEGER,
@@ -95,17 +95,17 @@ db.serialize(() => {
         console.error('获取菜单失败:', err);
         return;
       }
-      
+
       if (menus && menus.length) {
         console.log('找到菜单数量:', menus.length);
         menus.forEach(menu => {
           console.log(`菜单: ${menu.name} (ID: ${menu.id})`);
         });
-        
+
         const menuMap = {};
         menus.forEach(m => { menuMap[m.name] = m.id; });
         console.log('菜单映射:', menuMap);
-        
+
         // 插入子菜单
         const subMenus = [
           { parentMenu: 'Ai Stuff', name: 'AI chat', order: 1 },
@@ -116,11 +116,11 @@ db.serialize(() => {
           { parentMenu: 'Software', name: 'Android', order: 3 },
           { parentMenu: 'Software', name: 'Windows', order: 4 }
         ];
-        
+
         const subMenuStmt = db.prepare('INSERT INTO sub_menus (parent_id, name, "order") VALUES (?, ?, ?)');
         let subMenuInsertCount = 0;
         const subMenuMap = {};
-        
+
         subMenus.forEach(subMenu => {
           if (menuMap[subMenu.parentMenu]) {
             subMenuStmt.run(menuMap[subMenu.parentMenu], subMenu.name, subMenu.order, function(err) {
@@ -137,10 +137,10 @@ db.serialize(() => {
             console.warn(`未找到父菜单: ${subMenu.parentMenu}`);
           }
         });
-        
+
         subMenuStmt.finalize(() => {
           console.log(`所有子菜单插入完成，总计: ${subMenuInsertCount} 个子菜单`);
-          
+
           // 插入卡片（包括主菜单卡片和子菜单卡片）
           const cards = [
             // Home
@@ -167,7 +167,7 @@ db.serialize(() => {
             { menu: 'Home', title: '订阅转换', url: 'https://sublink.eooce.com', logo_url: 'https://img.icons8.com/color/96/link--v1.png', desc: '最好用的订阅转换工具' },
             { menu: 'Home', title: 'webssh', url: 'https://ssh.eooce.com', logo_url: 'https://img.icons8.com/fluency/240/ssh.png', desc: '最好用的webssh终端管理工具' },
             { menu: 'Home', title: '文件快递柜', url: 'https://filebox.nnuu.nyc.mn', logo_url: 'https://img.icons8.com/nolan/256/document.png', desc: '文件输出分享' },
-            { menu: 'Home', title: '真实地址生成', url: 'https://address.nnuu.nyc.mn', logo_url: 'https://static11.meiguodizhi.com/favicon.ico', desc: '基于当前ip生成真实的地址' },
+            { menu: 'Home', title: '真实地址生成', url: 'https://ip-generator.1357810.xyz', logo_url: 'https://static11.meiguodizhi.com/favicon.ico', desc: '基于当前ip生成真实的地址' },
             // AI Stuff
             { menu: 'Ai Stuff', title: 'ChatGPT', url: 'https://chat.openai.com', logo_url: 'https://cdn.oaistatic.com/assets/favicon-eex17e9e.ico', desc: 'OpenAI官方AI对话' },
             { menu: 'Ai Stuff', title: 'Deepseek', url: 'https://www.deepseek.com', logo_url: 'https://cdn.deepseek.com/chat/icon.png', desc: 'Deepseek AI搜索' },
@@ -213,10 +213,10 @@ db.serialize(() => {
             { menu: 'Other', title: '雅虎邮箱', url: 'https://mail.yahoo.com', logo_url: 'https://img.icons8.com/color/240/yahoo--v2.png', desc: '雅虎邮箱' },
             { menu: 'Other', title: '10分钟临时邮箱', url: 'https://linshiyouxiang.net', logo_url: 'https://linshiyouxiang.net/static/index/zh/images/favicon.ico', desc: '10分钟临时邮箱' },
           ];
-          
+
           const cardStmt = db.prepare('INSERT INTO cards (menu_id, sub_menu_id, title, url, logo_url, desc) VALUES (?, ?, ?, ?, ?, ?)');
           let cardInsertCount = 0;
-          
+
           cards.forEach(card => {
             if (card.subMenu) {
               // 插入子菜单卡片
@@ -228,7 +228,7 @@ db.serialize(() => {
                   break;
                 }
               }
-              
+
               if (subMenuId) {
                 cardStmt.run(null, subMenuId, card.title, card.url, card.logo_url, card.desc, function(err) {
                   if (err) {
@@ -255,7 +255,7 @@ db.serialize(() => {
               console.warn(`未找到菜单: ${card.menu}`);
             }
           });
-          
+
           cardStmt.finalize(() => {
             console.log(`所有卡片插入完成，总计: ${cardInsertCount} 张卡片`);
           });
@@ -292,4 +292,4 @@ db.serialize(() => {
 });
 
 
-module.exports = db; 
+module.exports = db;
