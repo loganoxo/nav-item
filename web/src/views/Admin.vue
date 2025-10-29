@@ -32,7 +32,7 @@
       </div>
     </div>
   </div>
-  
+
   <div v-else class="admin-layout">
     <aside class="admin-sider" :class="{ open: siderOpen }" @click.self="closeSider">
       <div class="logo clickable" @click="page='welcome'; closeSider()">Admin</div>
@@ -84,7 +84,7 @@
         <UserManage v-if="page==='user'" />
       </div>
       <footer class="admin-footer">
-        <p class="admin-copyright">Copyright © 2025 Nav-Item | <a href="https://github.com/eooce/Nav-Item" target="_blank" class="footer-link">Powered by eooce</a></p>
+        <p class="admin-copyright">Copyright © 2025 Nav-Item | <a href="https://github.com/loganoxo/Nav-Item" target="_blank" class="footer-link">Github</a></p>
       </footer>
     </main>
   </div>
@@ -147,10 +147,10 @@ async function handleLogin() {
     loginError.value = '请输入用户名和密码';
     return;
   }
-  
+
   loading.value = true;
   loginError.value = '';
-  
+
   try {
     const response = await login(username.value, password.value);
     if (response.data.token) {
@@ -615,4 +615,4 @@ function closeSider() {
 .menu-toggle {
   display: none;
 }
-</style> 
+</style>
